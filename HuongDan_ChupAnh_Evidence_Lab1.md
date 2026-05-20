@@ -115,8 +115,26 @@ Bằng cách tuân thủ đúng hướng dẫn này, báo cáo của bạn sẽ 
 * **Mục tiêu:** Chứng minh toàn bộ API đều trả về một cấu trúc JSON đồng nhất gồm các trường: `{ success, message, data, errors }` và trả về chính xác mã trạng thái HTTP tương ứng.
 * **Cách thực hiện & Số lượng ảnh cần chụp:** **05 ảnh** (Mỗi mã trạng thái HTTP chụp 1 ảnh kết quả).
   * 📸 **Ảnh 9.1 (Mã 200 OK):** Gọi `GET /api/students/1` thành công. Chụp màn hình hiển thị rõ chữ `Status: 200 OK` và cấu trúc JSON chuẩn có `"success": true`.
-  * 📸 **Ảnh 9.2 (Mã 201 Created):** Thực hiện request `POST /api/students` với dữ liệu hợp lệ để tạo mới. Chụp màn hình hiển thị rõ `Status: 201 Created` và dữ liệu sinh viên vừa tạo trong phần `"data"`.
-  * 📸 **Ảnh 9.3 (Mã 400 Bad Request):** Thực hiện request `POST /api/students` nhưng cố tình gửi dữ liệu không hợp lệ (ví dụ: email trống hoặc sai định dạng). Chụp màn hình hiển thị rõ `Status: 400 Bad Request` và thông báo lỗi chi tiết nằm trong trường `"errors"`.
+  * 📸 **Ảnh 9.2 (Mã 201 Created):** 
+    * **Thực hiện:** Trên Swagger hoặc Postman, chọn API **`POST /api/students`** và gửi dữ liệu JSON hợp lệ dưới đây:
+      ```json
+      {
+        "fullName": "Nguyen Huy Hoang",
+        "email": "hoangnh@fpt.edu.vn",
+        "dateOfBirth": "2004-10-15T00:00:00"
+      }
+      ```
+    * **Chụp ảnh:** Chụp lại màn hình trả về mã trạng thái **`Status: 201 Created`**, phần Header `Location` chứa link lấy chi tiết sinh viên, và phần Response Body hiển thị thông tin học sinh vừa tạo có ID mới tự sinh nằm trong trường `"data"`.
+  * 📸 **Ảnh 9.3 (Mã 400 Bad Request):**
+    * **Thực hiện:** Trên Swagger hoặc Postman, chọn API **`POST /api/students`** nhưng cố tình gửi dữ liệu sai định dạng (ví dụ email không hợp lệ và tên rỗng):
+      ```json
+      {
+        "fullName": "",
+        "email": "sai_dinh_dang_email",
+        "dateOfBirth": "2004-10-15T00:00:00"
+      }
+      ```
+    * **Chụp ảnh:** Chụp lại màn hình trả về mã trạng thái **`Status: 400 Bad Request`**, với JSON phản hồi chứa `"success": false` và phần `"errors"` chỉ rõ chi tiết lỗi của từng trường (`FullName` và `Email`).
   * 📸 **Ảnh 9.4 (Mã 404 Not Found):** Gọi `GET /api/students/9999` (ID không tồn tại). Chụp màn hình hiển thị rõ `Status: 404 Not Found` và trường `"success": false`, `"message": "Student not found"`.
   * 📸 **Ảnh 9.5 (Mã 500 Internal Server Error - TẮT SQL SERVER):** 
     * **Cách làm:** Mở Docker Desktop hoặc Services trên Windows, **Stop (tắt)** container database `lab1_db` (hoặc dừng dịch vụ SQL Server Local).
@@ -139,24 +157,31 @@ Bằng cách tuân thủ đúng hướng dẫn này, báo cáo của bạn sẽ 
 ---
 
 ### 1️⃣1️⃣ Yêu cầu 11: Tài liệu hóa Swagger/OpenAPI (Swagger Documentation & Testing)
-* **Mục tiêu:** Swagger được tích hợp đầy đủ, tài liệu hóa rõ ràng cấu trúc dữ liệu gửi lên (Request Schema), dữ liệu nhận về (Response Schema) và các mã HTTP Status có thể trả về.
+* **Mục tiêu:** Chứng minh hệ thống được tài liệu hóa rõ ràng và trực quan trên giao diện Swagger UI, hiển thị đầy đủ các Endpoint, cấu trúc dữ liệu gửi lên (Request Schema), dữ liệu nhận về (Response Schema) và đặc biệt là định nghĩa rõ ràng các mã trạng thái HTTP trả về để Client tiện sử dụng.
 * **Cách thực hiện:**
-  1. Truy cập Swagger UI.
-  2. Tìm đến một Endpoint bất kỳ (ví dụ: `POST /api/students` hoặc `GET /api/students/{id}`).
-  3. Mở rộng (Expand) endpoint đó ra để hiển thị chi tiết tài liệu.
+  1. Truy cập Swagger UI tại: `http://localhost:5000/swagger/index.html`.
+  2. Mở rộng (Expand) một Endpoint đại diện, ví dụ `POST /api/students` hoặc `GET /api/students/{id}`.
 * **Số lượng ảnh cần chụp:** **02 ảnh**.
-  * 📸 **Ảnh 11.1:** Chụp tổng quan giao diện Swagger UI với đầy đủ các Endpoint của 5 resources tương ứng với 5 bảng.
-  * 📸 **Ảnh 11.2:** Chụp phần **Responses** của một endpoint bất kỳ trên Swagger, chỉ rõ phần mô tả chi tiết các mã HTTP Status Code `200`, `201`, `400`, `404`, `500` kèm Schema/Model mẫu đã được định nghĩa chuyên nghiệp.
+  * 📸 **Ảnh 11.1 (Tổng quan Swagger):** Chụp tổng quan giao diện Swagger UI của bạn hiển thị đủ 5 Resources với đầy đủ các phương thức HTTP RESTful tương ứng. Rõ nét nhất là mục của **`Students`** hiện tại đã có cả `GET` và `POST`.
+  * 📸 **Ảnh 11.2 (Chi tiết Responses & Schema):** Chụp phần **Responses** của API `POST /api/students` hoặc `GET /api/students/{id}` trên Swagger. Ảnh chụp phải thể hiện rõ:
+    * Swagger liệt kê đầy đủ các mã trạng thái HTTP có thể trả về: `200` (hoặc `201`), `400`, `404`, `500`.
+    * Mỗi mã trạng thái đều có mô tả tương ứng (ví dụ: *Success*, *Bad Request*, *Not Found*, *Internal Server Error*).
+    * Bấm chọn tab **Schema** ở phần Response 200/201 để chứng minh có cấu trúc dữ liệu mẫu (`ApiResponse`) rõ ràng với các trường `success`, `message`, `data`, `errors` định nghĩa kiểu dữ liệu chuẩn mực.
 
 ---
 
 ### 1️⃣2️⃣ Yêu cầu 12: Chất lượng mã nguồn (Code Quality)
-* **Mục tiêu:** Chứng minh mã nguồn sạch sẽ, tổ chức thư mục khoa học, tuân thủ các quy tắc Clean Code và C# Best Practices (ít code thừa, đặt tên biến rõ nghĩa, có xử lý ngoại lệ).
+* **Mục tiêu:** Chứng minh mã nguồn sạch sẽ (Clean Code), tổ chức cấu trúc 3 lớp rõ ràng, tuân thủ C# Best Practices, đặt tên biến rõ nghĩa và đặc biệt là **có viết comment chú thích nội dung chính bằng Tiếng Việt đầy đủ** ở các khối logic phức tạp để code dễ đọc, dễ bảo trì.
 * **Cách thực hiện:**
-  1. Mở một tệp Service xử lý logic phức tạp (ví dụ: `StudentService.cs` hoặc `EnrollmentService.cs` phần thực hiện Dynamic Filtering/Sorting hoặc Expansion).
-  2. Đảm bảo mã nguồn được format căn lề đẹp mắt, có comment giải thích rõ ràng các khối logic quan trọng.
-* **Số lượng ảnh cần chụp:** **01 ảnh**.
-  * 📸 **Ảnh 12.1:** Chụp màn hình một khối xử lý logic nghiệp vụ tiêu biểu trong lớp Service (ví dụ phương thức áp dụng dynamic select fields hoặc dynamic filter) để chứng minh mã nguồn được tổ chức cực kỳ gọn gàng, thông minh và dễ bảo trì.
+  1. Mở IDE của bạn (Visual Studio / VS Code).
+  2. Định vị đến các khối code đã được chúng ta thiết kế tối ưu, sạch sẽ và có chú thích Tiếng Việt rõ ràng.
+* **Số lượng ảnh cần chụp:** **02 ảnh** (Để tăng tính thuyết phục cao nhất với giảng viên).
+  * 📸 **Ảnh 12.1 (Comment ở Tầng Service):** 
+    * Mở file [StudentService.cs](file:///d:/2026_SUM/PRN232/LAB01/PRN232.LAB_1_REST_API.Services/StudentService.cs) tại phương thức **`AddStudentAsync`**.
+    * Chụp lại màn hình đoạn mã này. Ảnh chụp sẽ cho thấy các bước xử lý logic (Ánh xạ Request -> Gọi Repo lưu DB -> Ánh xạ ngược lại Business Model) được tổ chức ngắn gọn, mạch lạc và có comment Tiếng Việt chi tiết giải thích cho từng bước (Bước 1, Bước 2, Bước 3, Bước 4).
+  * 📸 **Ảnh 12.2 (Comment & Exception ở Tầng Controller):**
+    * Mở file [StudentsController.cs](file:///d:/2026_SUM/PRN232/LAB01/PRN232.LAB_1_REST_API.API/Controllers/StudentsController.cs) tại Action method **`CreateStudent`**.
+    * Chụp lại màn hình. Ảnh chụp sẽ chứng minh API Controller được thiết kế chuyên nghiệp: xử lý Validation đầu vào cực sạch bằng `ModelState.IsValid`, trả về lỗi `400 BadRequest` hoặc thành công `201 CreatedAtAction` bọc trong vỏ `ApiResponse`, đồng thời có comment Tiếng Việt giải thích cặn kẽ từng bước xử lý.
 
 ---
 
