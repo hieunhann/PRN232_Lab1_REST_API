@@ -1,7 +1,7 @@
 using AutoMapper;
 using PRN232.LAB_1_REST_API.Repositories.Entities;
 using PRN232.LAB_1_REST_API.Services.Models;
-using PRN232.LAB_1_REST_API.API.Models;
+using PRN232.LAB_1_REST_API.Services.Models.Responses;
 
 namespace PRN232.LAB_1_REST_API.API.Profiles
 {
@@ -17,11 +17,12 @@ namespace PRN232.LAB_1_REST_API.API.Profiles
             CreateMap<Semester, SemesterBusinessModel>();
             
             // Business Model to API Response Model
-            CreateMap<StudentBusinessModel, StudentResponseModel>();
-            CreateMap<EnrollmentBusinessModel, EnrollmentResponseModel>();
-            CreateMap<CourseBusinessModel, CourseResponseModel>();
-            CreateMap<SubjectBusinessModel, SubjectResponseModel>();
-            CreateMap<SemesterBusinessModel, SemesterResponseModel>();
+            CreateMap<StudentBusinessModel, StudentResponse>();
+            CreateMap<EnrollmentBusinessModel, EnrollmentResponse>();
+            CreateMap<CourseBusinessModel, CourseResponse>();
+            CreateMap<SubjectBusinessModel, SubjectResponse>();
+            CreateMap<SemesterBusinessModel, SemesterResponse>();
         }
     }
 }
+

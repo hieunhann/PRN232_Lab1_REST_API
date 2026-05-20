@@ -1,0 +1,20 @@
+=== PARAGRAPHS ===
+Para 0: 1
+Para 5: 2
+Para 7: 3
+Para 9: 4
+Para 11: 5
+Para 13: 6
+Para 16: 7
+Para 18: 8
+Para 20: 9
+Para 21: mã 200
+Para 23: mã 201
+Para 25: mã 400
+Para 27: mã 404
+Para 29: mã 500 (e tắt sql server)
+Para 33: 10
+Para 36: 11
+Para 38: 12
+
+=== TABLES ===

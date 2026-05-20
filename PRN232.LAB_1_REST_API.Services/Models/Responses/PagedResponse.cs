@@ -1,6 +1,6 @@
-namespace PRN232.LAB_1_REST_API.API.Models
+namespace PRN232.LAB_1_REST_API.Services.Models.Responses
 {
-    public class PaginationMetadata
+    public class PagedResponse
     {
         public int Page { get; set; }
         public int PageSize { get; set; }

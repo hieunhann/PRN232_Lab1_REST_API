@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 
-namespace PRN232.LAB_1_REST_API.API.Models
+namespace PRN232.LAB_1_REST_API.Services.Models.Responses
 {
     public class ApiResponse<T>
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public PaginationMetadata? Pagination { get; set; }
+        public PagedResponse? Pagination { get; set; }
         
         public bool Success { get; set; }
         

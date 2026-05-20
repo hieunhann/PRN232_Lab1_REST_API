@@ -1,7 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PRN232.LAB_1_REST_API.API.Extensions;
-using PRN232.LAB_1_REST_API.API.Models;
+using PRN232.LAB_1_REST_API.Services.Models.Requests;
+using PRN232.LAB_1_REST_API.Services.Models.Responses;
 using PRN232.LAB_1_REST_API.Services.Interfaces;
 using PRN232.LAB_1_REST_API.Services.Models;
 using System.Collections.Generic;
@@ -36,9 +37,9 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
                 });
             }
 
-            var responseModel = _mapper.Map<EnrollmentResponseModel>(businessModel);
+            var responseModel = _mapper.Map<EnrollmentResponse>(businessModel);
 
-            return Ok(new ApiResponse<EnrollmentResponseModel>
+            return Ok(new ApiResponse<EnrollmentResponse>
             {
                 Success = true,
                 Message = "Request processed successfully",
@@ -47,15 +48,15 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEnrollments([FromQuery] PaginationRequestModel request)
+        public async Task<IActionResult> GetEnrollments([FromQuery] ListQueryRequest request)
         {
             var result = await _enrollmentService.GetEnrollmentsAsync(request.Search, request.Sort, request.Page, request.Size, request.Expand, request.Filter);
-            var responseModels = _mapper.Map<IEnumerable<EnrollmentResponseModel>>(result.Items);
+            var responseModels = _mapper.Map<IEnumerable<EnrollmentResponse>>(result.Items);
             var shapedData = responseModels.ShapeData(request.Fields);
 
             return Ok(new ApiResponse<object>
             {
-                Pagination = new PaginationMetadata { Page = request.Page, PageSize = request.Size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
+                Pagination = new PagedResponse { Page = request.Page, PageSize = request.Size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
                 Success = true,
                 Message = "Request processed successfully",
                 Data = shapedData
@@ -63,3 +64,4 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
     }
 }
+

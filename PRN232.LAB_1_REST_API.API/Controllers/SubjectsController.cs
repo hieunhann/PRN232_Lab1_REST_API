@@ -1,9 +1,10 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PRN232.LAB_1_REST_API.API.Extensions;
-using PRN232.LAB_1_REST_API.API.Models;
 using PRN232.LAB_1_REST_API.Services.Interfaces;
 using PRN232.LAB_1_REST_API.Services.Models;
+using PRN232.LAB_1_REST_API.Services.Models.Requests;
+using PRN232.LAB_1_REST_API.Services.Models.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -36,9 +37,9 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
                 });
             }
 
-            var responseModel = _mapper.Map<SubjectResponseModel>(businessModel);
+            var responseModel = _mapper.Map<SubjectResponse>(businessModel);
 
-            return Ok(new ApiResponse<SubjectResponseModel>
+            return Ok(new ApiResponse<SubjectResponse>
             {
                 Success = true,
                 Message = "Request processed successfully",
@@ -47,15 +48,15 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSubjects([FromQuery] PaginationRequestModel request)
+        public async Task<IActionResult> GetSubjects([FromQuery] ListQueryRequest request)
         {
             var result = await _subjectService.GetSubjectsAsync(request.Search, request.Sort, request.Page, request.Size, request.Expand, request.Filter);
-            var responseModels = _mapper.Map<IEnumerable<SubjectResponseModel>>(result.Items);
+            var responseModels = _mapper.Map<IEnumerable<SubjectResponse>>(result.Items);
             var shapedData = responseModels.ShapeData(request.Fields);
 
             return Ok(new ApiResponse<object>
             {
-                Pagination = new PaginationMetadata { Page = request.Page, PageSize = request.Size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
+                Pagination = new PagedResponse { Page = request.Page, PageSize = request.Size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
                 Success = true,
                 Message = "Request processed successfully",
                 Data = shapedData

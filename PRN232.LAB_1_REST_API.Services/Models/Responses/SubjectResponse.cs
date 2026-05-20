@@ -1,6 +1,6 @@
-namespace PRN232.LAB_1_REST_API.API.Models
+namespace PRN232.LAB_1_REST_API.Services.Models.Responses
 {
-    public class SubjectResponseModel
+    public class SubjectResponse
     {
         public int SubjectId { get; set; }
         public string SubjectCode { get; set; } = null!;

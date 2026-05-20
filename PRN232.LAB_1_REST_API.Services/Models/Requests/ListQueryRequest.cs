@@ -1,6 +1,6 @@
-namespace PRN232.LAB_1_REST_API.API.Models
+namespace PRN232.LAB_1_REST_API.Services.Models.Requests
 {
-    public class PaginationRequestModel
+    public class ListQueryRequest
     {
         public string? Search { get; set; }
         public string? Sort { get; set; }

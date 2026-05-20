@@ -1,8 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PRN232.LAB_1_REST_API.API.Extensions;
-using PRN232.LAB_1_REST_API.API.Models;
 using PRN232.LAB_1_REST_API.Services.Interfaces;
+using PRN232.LAB_1_REST_API.Services.Models.Requests;
+using PRN232.LAB_1_REST_API.Services.Models.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -35,9 +36,9 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
                 });
             }
 
-            var responseModel = _mapper.Map<StudentResponseModel>(businessModel);
+            var responseModel = _mapper.Map<StudentResponse>(businessModel);
 
-            return Ok(new ApiResponse<StudentResponseModel>
+            return Ok(new ApiResponse<StudentResponse>
             {
                 Success = true,
                 Message = "Request processed successfully",
@@ -46,16 +47,16 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStudents([FromQuery] PaginationRequestModel request)
+        public async Task<IActionResult> GetStudents([FromQuery] ListQueryRequest request)
         {
             var result = await _studentService.GetStudentsAsync(request.Search, request.Sort, request.Page, request.Size, request.Expand, request.Filter);
             
-            var responseModels = _mapper.Map<IEnumerable<StudentResponseModel>>(result.Items);
+            var responseModels = _mapper.Map<IEnumerable<StudentResponse>>(result.Items);
             
             // Dynamic Shaping (Selection) để lọc các trường client yêu cầu
             var shapedData = responseModels.ShapeData(request.Fields);
 
-            var pagination = new PaginationMetadata
+            var pagination = new PagedResponse
             {
                 Page = request.Page,
                 PageSize = request.Size,
