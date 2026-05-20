@@ -1,6 +1,7 @@
 using AutoMapper;
 using PRN232.LAB_1_REST_API.Repositories.Entities;
 using PRN232.LAB_1_REST_API.Services.Models;
+using PRN232.LAB_1_REST_API.Services.Models.Requests;
 using PRN232.LAB_1_REST_API.Services.Models.Responses;
 
 namespace PRN232.LAB_1_REST_API.API.Profiles
@@ -9,6 +10,9 @@ namespace PRN232.LAB_1_REST_API.API.Profiles
     {
         public MappingProfile()
         {
+            // Request Model to Database Entity (Phục vụ cho việc POST tạo mới)
+            CreateMap<StudentRequest, Student>();
+
             // Entity to Business Model
             CreateMap<Student, StudentBusinessModel>();
             CreateMap<Enrollment, EnrollmentBusinessModel>();

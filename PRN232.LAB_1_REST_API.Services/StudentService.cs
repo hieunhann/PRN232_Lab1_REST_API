@@ -3,6 +3,7 @@ using PRN232.LAB_1_REST_API.Repositories;
 using PRN232.LAB_1_REST_API.Repositories.Entities;
 using PRN232.LAB_1_REST_API.Services.Interfaces;
 using PRN232.LAB_1_REST_API.Services.Models;
+using PRN232.LAB_1_REST_API.Services.Models.Requests;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -30,6 +31,25 @@ namespace PRN232.LAB_1_REST_API.Services
             var result = await _repository.GetPagedListAsync(search, sort, page, pageSize, expand, filter);
             var mappedItems = _mapper.Map<IEnumerable<StudentBusinessModel>>(result.Items);
             return (mappedItems, result.TotalItems, result.TotalPages);
+        }
+
+        /// <summary>
+        /// Thực hiện logic thêm mới học sinh
+        /// </summary>
+        public async Task<StudentBusinessModel> AddStudentAsync(StudentRequest request)
+        {
+            // Bước 1: Dùng AutoMapper ánh xạ từ Request Model nhận được từ Controller sang Entity vật lý Student
+            var studentEntity = _mapper.Map<Student>(request);
+            
+            // Bước 2: Gọi Repository để đưa đối tượng StudentEntity vào trạng thái Added trong DbContext
+            await _repository.AddAsync(studentEntity);
+            
+            // Bước 3: Lưu các thay đổi xuống cơ sở dữ liệu (Database). 
+            // Sau dòng này, Entity Framework Core sẽ tự động cập nhật ID của studentEntity lấy từ DB tự tăng.
+            await _repository.SaveChangesAsync();
+            
+            // Bước 4: Ánh xạ thực thể Database đã có ID sang Business Model để trả về cho tầng Presentation
+            return _mapper.Map<StudentBusinessModel>(studentEntity);
         }
     }
 }

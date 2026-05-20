@@ -117,5 +117,23 @@ namespace PRN232.LAB_1_REST_API.Repositories
 
             return (items, totalItems, totalPages);
         }
+
+        /// <summary>
+        /// Thêm thực thể vào DbContext một cách bất đồng bộ
+        /// </summary>
+        public async Task AddAsync(T entity)
+        {
+            // Sử dụng DbSet.AddAsync để đưa thực thể vào trạng thái Added
+            await _dbSet.AddAsync(entity);
+        }
+
+        /// <summary>
+        /// Thực hiện lưu toàn bộ thay đổi trong DbContext xuống DB vật lý
+        /// </summary>
+        public async Task<bool> SaveChangesAsync()
+        {
+            // Trả về true nếu số lượng dòng bị ảnh hưởng lớn hơn 0
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }
