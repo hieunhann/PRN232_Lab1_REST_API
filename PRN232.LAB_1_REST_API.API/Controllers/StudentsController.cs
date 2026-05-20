@@ -112,5 +112,59 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
                     Data = responseModel
                 });
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateStudent(int id, [FromBody] StudentRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Dữ liệu cập nhật không hợp lệ!",
+                    Errors = ModelState
+                });
+            }
+
+            var updatedBusiness = await _studentService.UpdateStudentAsync(id, request);
+            if (updatedBusiness == null)
+            {
+                return NotFound(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Học sinh không tồn tại để cập nhật!",
+                    Errors = "404 Not Found"
+                });
+            }
+
+            var responseModel = _mapper.Map<StudentResponse>(updatedBusiness);
+            return Ok(new ApiResponse<StudentResponse>
+            {
+                Success = true,
+                Message = "Cập nhật thông tin học sinh thành công!",
+                Data = responseModel
+            });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStudent(int id)
+        {
+            var isDeleted = await _studentService.DeleteStudentAsync(id);
+            if (!isDeleted)
+            {
+                return NotFound(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Học sinh không tồn tại hoặc không thể xóa!",
+                    Errors = "404 Not Found"
+                });
+            }
+
+            return Ok(new ApiResponse<object>
+            {
+                Success = true,
+                Message = "Xóa học sinh thành công!"
+            });
+        }
     }
 }

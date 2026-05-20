@@ -48,5 +48,26 @@ namespace PRN232.LAB_1_REST_API.Services
             // Bước 4: Ánh xạ thực thể Database đã có ID sang Business Model để trả về cho tầng Presentation
             return _mapper.Map<StudentBusinessModel>(studentEntity);
         }
+
+        public async Task<StudentBusinessModel?> UpdateStudentAsync(int id, StudentRequest request)
+        {
+            var studentEntity = await _repository.GetByIdAsync(id);
+            if (studentEntity == null) return null;
+
+            _mapper.Map(request, studentEntity);
+            _repository.Update(studentEntity);
+            await _repository.SaveChangesAsync();
+
+            return _mapper.Map<StudentBusinessModel>(studentEntity);
+        }
+
+        public async Task<bool> DeleteStudentAsync(int id)
+        {
+            var studentEntity = await _repository.GetByIdAsync(id);
+            if (studentEntity == null) return false;
+
+            _repository.Delete(studentEntity);
+            return await _repository.SaveChangesAsync();
+        }
     }
 }

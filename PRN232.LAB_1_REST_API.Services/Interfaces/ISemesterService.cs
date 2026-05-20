@@ -1,4 +1,5 @@
 using PRN232.LAB_1_REST_API.Services.Models;
+using PRN232.LAB_1_REST_API.Services.Models.Requests;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,5 +9,8 @@ namespace PRN232.LAB_1_REST_API.Services.Interfaces
     {
         Task<SemesterBusinessModel?> GetSemesterByIdAsync(int id, string? expand);
         Task<(IEnumerable<SemesterBusinessModel> Items, int TotalItems, int TotalPages)> GetSemestersAsync(string? search, string? sort, int page, int pageSize, string? expand, string? filter = null);
+        Task<SemesterBusinessModel> AddSemesterAsync(SemesterRequest request);
+        Task<SemesterBusinessModel?> UpdateSemesterAsync(int id, SemesterRequest request);
+        Task<bool> DeleteSemesterAsync(int id);
     }
 }

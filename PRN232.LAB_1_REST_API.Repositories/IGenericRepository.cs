@@ -22,6 +22,18 @@ namespace PRN232.LAB_1_REST_API.Repositories
         Task AddAsync(T entity);
 
         /// <summary>
+        /// Cập nhật một thực thể đã tồn tại trong cơ sở dữ liệu
+        /// </summary>
+        /// <param name="entity">Thực thể cần cập nhật</param>
+        void Update(T entity);
+
+        /// <summary>
+        /// Xóa một thực thể khỏi cơ sở dữ liệu
+        /// </summary>
+        /// <param name="entity">Thực thể cần xóa</param>
+        void Delete(T entity);
+
+        /// <summary>
         /// Lưu tất cả thay đổi đã thực hiện trong DbContext xuống cơ sở dữ liệu
         /// </summary>
         /// <returns>True nếu có ít nhất một bản ghi được thay đổi thành công, ngược lại False</returns>

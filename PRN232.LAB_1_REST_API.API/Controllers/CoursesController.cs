@@ -62,6 +62,86 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
                 Data = shapedData
             });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCourse([FromBody] CourseRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Dữ liệu tạo mới không hợp lệ!",
+                    Errors = ModelState
+                });
+            }
+
+            var createdBusiness = await _courseService.AddCourseAsync(request);
+            var responseModel = _mapper.Map<CourseResponse>(createdBusiness);
+
+            return CreatedAtAction(
+                nameof(GetCourse),
+                new { id = responseModel.CourseId },
+                new ApiResponse<CourseResponse>
+                {
+                    Success = true,
+                    Message = "Tạo khóa học thành công!",
+                    Data = responseModel
+                });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCourse(int id, [FromBody] CourseRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Dữ liệu cập nhật không hợp lệ!",
+                    Errors = ModelState
+                });
+            }
+
+            var updatedBusiness = await _courseService.UpdateCourseAsync(id, request);
+            if (updatedBusiness == null)
+            {
+                return NotFound(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Khóa học không tồn tại để cập nhật!",
+                    Errors = "404 Not Found"
+                });
+            }
+
+            var responseModel = _mapper.Map<CourseResponse>(updatedBusiness);
+            return Ok(new ApiResponse<CourseResponse>
+            {
+                Success = true,
+                Message = "Cập nhật khóa học thành công!",
+                Data = responseModel
+            });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCourse(int id)
+        {
+            var isDeleted = await _courseService.DeleteCourseAsync(id);
+            if (!isDeleted)
+            {
+                return NotFound(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Khóa học không tồn tại hoặc không thể xóa!",
+                    Errors = "404 Not Found"
+                });
+            }
+
+            return Ok(new ApiResponse<object>
+            {
+                Success = true,
+                Message = "Xóa khóa học thành công!"
+            });
+        }
     }
 }
-

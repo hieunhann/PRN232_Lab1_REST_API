@@ -16,5 +16,15 @@ namespace PRN232.LAB_1_REST_API.Services.Interfaces
         /// <param name="request">Thông tin sinh viên cần thêm từ client</param>
         /// <returns>Dữ liệu sinh viên vừa tạo sau khi được lưu thành công kèm theo ID tự tăng</returns>
         Task<StudentBusinessModel> AddStudentAsync(StudentRequest request);
+
+        /// <summary>
+        /// Cập nhật thông tin học sinh
+        /// </summary>
+        Task<StudentBusinessModel?> UpdateStudentAsync(int id, StudentRequest request);
+
+        /// <summary>
+        /// Xóa học sinh khỏi hệ thống
+        /// </summary>
+        Task<bool> DeleteStudentAsync(int id);
     }
 }

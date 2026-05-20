@@ -10,8 +10,12 @@ namespace PRN232.LAB_1_REST_API.API.Profiles
     {
         public MappingProfile()
         {
-            // Request Model to Database Entity (Phục vụ cho việc POST tạo mới)
+            // Request Model to Database Entity (Phục vụ cho việc POST tạo mới & PUT cập nhật)
             CreateMap<StudentRequest, Student>();
+            CreateMap<CourseRequest, Course>();
+            CreateMap<EnrollmentRequest, Enrollment>();
+            CreateMap<SemesterRequest, Semester>();
+            CreateMap<SubjectRequest, Subject>();
 
             // Entity to Business Model
             CreateMap<Student, StudentBusinessModel>();
