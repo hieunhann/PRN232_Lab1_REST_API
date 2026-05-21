@@ -27,8 +27,7 @@ namespace PRN232.LAB_1_REST_API.Repositories
                 var properties = expand.Split(',', StringSplitOptions.RemoveEmptyEntries);
                 foreach (var prop in properties)
                 {
-                    // Chữ cái đầu tiên viết hoa để khớp với tên Navigation Property
-                    string formattedProp = char.ToUpper(prop.Trim()[0]) + prop.Trim().Substring(1);
+                    string formattedProp = NormalizeIncludePath(prop);
                     query = query.Include(formattedProp);
                 }
             }
@@ -66,7 +65,7 @@ namespace PRN232.LAB_1_REST_API.Repositories
                 var properties = expand.Split(',', StringSplitOptions.RemoveEmptyEntries);
                 foreach (var prop in properties)
                 {
-                    string formattedProp = char.ToUpper(prop.Trim()[0]) + prop.Trim().Substring(1);
+                    string formattedProp = NormalizeIncludePath(prop);
                     query = query.Include(formattedProp);
                 }
             }
@@ -150,6 +149,17 @@ namespace PRN232.LAB_1_REST_API.Repositories
         {
             // Trả về true nếu số lượng dòng bị ảnh hưởng lớn hơn 0
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        private static string NormalizeIncludePath(string path)
+        {
+            var segments = path
+                .Split('.', StringSplitOptions.RemoveEmptyEntries)
+                .Select(segment => segment.Trim())
+                .Where(segment => !string.IsNullOrWhiteSpace(segment))
+                .Select(segment => char.ToUpper(segment[0]) + segment.Substring(1));
+
+            return string.Join('.', segments);
         }
     }
 }

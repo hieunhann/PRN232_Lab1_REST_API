@@ -25,6 +25,8 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStudent(int id, [FromQuery] string? expand)
         {
+            expand ??= "Enrollments.Course";
+
             var businessModel = await _studentService.GetStudentByIdAsync(id, expand);
             if (businessModel == null)
             {
@@ -49,17 +51,17 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetStudents([FromQuery] ListQueryRequest request)
         {
-            var result = await _studentService.GetStudentsAsync(request.Search, request.Sort, request.Page, request.Size, request.Expand, request.Filter);
+            var result = await _studentService.GetStudentsAsync(request.search, request.sort, request.page, request.size, request.expand, request.filter);
             
             var responseModels = _mapper.Map<IEnumerable<StudentResponse>>(result.Items);
             
             // Dynamic Shaping (Selection) để lọc các trường client yêu cầu
-            var shapedData = responseModels.ShapeData(request.Fields);
+            var shapedData = responseModels.ShapeData(request.fields);
 
             var pagination = new PagedResponse
             {
-                Page = request.Page,
-                PageSize = request.Size,
+                Page = request.page,
+                PageSize = request.size,
                 TotalItems = result.TotalItems,
                 TotalPages = result.TotalPages
             };
@@ -164,6 +166,37 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             {
                 Success = true,
                 Message = "Xóa học sinh thành công!"
+            });
+        }
+
+        /// <summary>
+        /// GET: api/students/{studentId}/courses
+        /// Lấy tất cả các khóa học mà sinh viên đã đăng ký học theo StudentId
+        /// </summary>
+        /// <param name="studentId">Mã định danh học sinh</param>
+        /// <returns>Danh sách khóa học</returns>
+        [HttpGet("{studentId}/courses")]
+        public async Task<IActionResult> GetCoursesByStudentId(int studentId)
+        {
+            // Lấy danh sách khóa học của học sinh từ service
+            var courses = await _studentService.GetCoursesByStudentIdAsync(studentId);
+            if (courses == null)
+            {
+                return NotFound(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Học sinh không tồn tại!",
+                    Errors = "404 Not Found"
+                });
+            }
+
+            var responseModels = _mapper.Map<IEnumerable<CourseResponse>>(courses);
+
+            return Ok(new ApiResponse<IEnumerable<CourseResponse>>
+            {
+                Success = true,
+                Message = "Lấy danh sách khóa học của học sinh thành công!",
+                Data = responseModels
             });
         }
     }

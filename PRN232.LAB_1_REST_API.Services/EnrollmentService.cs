@@ -5,6 +5,7 @@ using PRN232.LAB_1_REST_API.Services.Interfaces;
 using PRN232.LAB_1_REST_API.Services.Models;
 using PRN232.LAB_1_REST_API.Services.Models.Requests;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PRN232.LAB_1_REST_API.Services
@@ -60,6 +61,35 @@ namespace PRN232.LAB_1_REST_API.Services
 
             _repository.Delete(entity);
             return await _repository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<StudentBusinessModel>?> GetStudentsByEnrollmentIdAsync(int enrollmentId)
+        {
+            // Lấy thông tin Enrollment dựa trên ID để xác định CourseId tương ứng
+            var enrollment = await _repository.GetByIdAsync(enrollmentId);
+            if (enrollment == null) return null;
+
+            int courseId = enrollment.CourseId;
+            
+            // Tìm tất cả các Enrollment cùng thuộc CourseId này và nạp thông tin Student
+            var result = await _repository.GetPagedListAsync(
+                search: null,
+                sort: null,
+                page: 1,
+                pageSize: 9999, // Lấy toàn bộ danh sách đăng ký học của lớp
+                expand: "Student",
+                filter: $"CourseId == {courseId}"
+            );
+
+            // Trích xuất thông tin Student và ánh xạ sang Business Model
+            var students = result.Items.Select(e => e.Student);
+            return _mapper.Map<IEnumerable<StudentBusinessModel>>(students);
+        }
+
+        public async Task<CourseBusinessModel?> GetCourseByEnrollmentIdAsync(int enrollmentId)
+        {
+            var enrollment = await _repository.GetByIdAsync(enrollmentId, "Course.Enrollments.Student");
+            return enrollment?.Course == null ? null : _mapper.Map<CourseBusinessModel>(enrollment.Course);
         }
     }
 }

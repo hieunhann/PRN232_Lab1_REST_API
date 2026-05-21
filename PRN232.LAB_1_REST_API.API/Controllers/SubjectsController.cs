@@ -50,13 +50,13 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSubjects([FromQuery] ListQueryRequest request)
         {
-            var result = await _subjectService.GetSubjectsAsync(request.Search, request.Sort, request.Page, request.Size, request.Expand, request.Filter);
+            var result = await _subjectService.GetSubjectsAsync(request.search, request.sort, request.page, request.size, request.expand, request.filter);
             var responseModels = _mapper.Map<IEnumerable<SubjectResponse>>(result.Items);
-            var shapedData = responseModels.ShapeData(request.Fields);
+            var shapedData = responseModels.ShapeData(request.fields);
 
             return Ok(new ApiResponse<object>
             {
-                Pagination = new PagedResponse { Page = request.Page, PageSize = request.Size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
+                Pagination = new PagedResponse { Page = request.page, PageSize = request.size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
                 Success = true,
                 Message = "Request processed successfully",
                 Data = shapedData

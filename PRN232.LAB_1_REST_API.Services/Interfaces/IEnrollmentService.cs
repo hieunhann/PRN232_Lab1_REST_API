@@ -12,5 +12,15 @@ namespace PRN232.LAB_1_REST_API.Services.Interfaces
         Task<EnrollmentBusinessModel> AddEnrollmentAsync(EnrollmentRequest request);
         Task<EnrollmentBusinessModel?> UpdateEnrollmentAsync(int id, EnrollmentRequest request);
         Task<bool> DeleteEnrollmentAsync(int id);
+        
+        /// <summary>
+        /// Lấy danh sách tất cả sinh viên cùng học một lớp (khóa học) của một enrollment theo EnrollmentId
+        /// </summary>
+        Task<IEnumerable<StudentBusinessModel>?> GetStudentsByEnrollmentIdAsync(int enrollmentId);
+
+        /// <summary>
+        /// Lấy khóa học theo enrollment và kèm toàn bộ sinh viên đang tham gia khóa học đó
+        /// </summary>
+        Task<CourseBusinessModel?> GetCourseByEnrollmentIdAsync(int enrollmentId);
     }
 }

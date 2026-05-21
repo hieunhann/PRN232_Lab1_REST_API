@@ -5,6 +5,7 @@ using PRN232.LAB_1_REST_API.Services.Interfaces;
 using PRN232.LAB_1_REST_API.Services.Models;
 using PRN232.LAB_1_REST_API.Services.Models.Requests;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PRN232.LAB_1_REST_API.Services
@@ -60,6 +61,15 @@ namespace PRN232.LAB_1_REST_API.Services
 
             _repository.Delete(entity);
             return await _repository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<CourseBusinessModel>?> GetCoursesBySemesterIdAsync(int semesterId)
+        {
+            // Tải thông tin học kỳ cùng các khóa học thuộc học kỳ đó
+            var semester = await _repository.GetByIdAsync(semesterId, "Courses");
+            if (semester == null) return null;
+
+            return _mapper.Map<IEnumerable<CourseBusinessModel>>(semester.Courses);
         }
     }
 }

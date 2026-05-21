@@ -6,6 +6,7 @@ using PRN232.LAB_1_REST_API.Services.Models.Responses;
 using PRN232.LAB_1_REST_API.Services.Interfaces;
 using PRN232.LAB_1_REST_API.Services.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PRN232.LAB_1_REST_API.API.Controllers
@@ -26,6 +27,8 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEnrollment(int id, [FromQuery] string? expand)
         {
+            expand ??= "Course.Enrollments.Student";
+
             var businessModel = await _enrollmentService.GetEnrollmentByIdAsync(id, expand);
             if (businessModel == null)
             {
@@ -50,13 +53,13 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEnrollments([FromQuery] ListQueryRequest request)
         {
-            var result = await _enrollmentService.GetEnrollmentsAsync(request.Search, request.Sort, request.Page, request.Size, request.Expand, request.Filter);
+            var result = await _enrollmentService.GetEnrollmentsAsync(request.search, request.sort, request.page, request.size, request.expand, request.filter);
             var responseModels = _mapper.Map<IEnumerable<EnrollmentResponse>>(result.Items);
-            var shapedData = responseModels.ShapeData(request.Fields);
+            var shapedData = responseModels.ShapeData(request.fields);
 
             return Ok(new ApiResponse<object>
             {
-                Pagination = new PagedResponse { Page = request.Page, PageSize = request.Size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
+                Pagination = new PagedResponse { Page = request.page, PageSize = request.size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
                 Success = true,
                 Message = "Request processed successfully",
                 Data = shapedData
@@ -166,6 +169,85 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             {
                 Success = true,
                 Message = "Xóa đăng ký môn học thành công!"
+            });
+        }
+
+        /// <summary>
+        /// GET: api/enrollments/{enrollmentId}/students
+        /// Lấy tất cả sinh viên học cùng lớp (khóa học) của một enrollment theo EnrollmentId
+        /// </summary>
+        /// <param name="enrollmentId">Mã định danh đăng ký học</param>
+        /// <returns>Danh sách sinh viên học cùng lớp</returns>
+        [HttpGet("{enrollmentId}/students")]
+        public async Task<IActionResult> GetStudentsByEnrollmentId(int enrollmentId)
+        {
+            // Lấy danh sách sinh viên cùng lớp từ service
+            var students = await _enrollmentService.GetStudentsByEnrollmentIdAsync(enrollmentId);
+            if (students == null)
+            {
+                return NotFound(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Bản ghi đăng ký môn học không tồn tại!",
+                    Errors = "404 Not Found"
+                });
+            }
+
+            var responseModels = _mapper.Map<IEnumerable<StudentResponse>>(students);
+
+            return Ok(new ApiResponse<IEnumerable<StudentResponse>>
+            {
+                Success = true,
+                Message = "Lấy danh sách sinh viên cùng lớp thành công!",
+                Data = responseModels
+            });
+        }
+
+        /// <summary>
+        /// GET: api/enrollments/{enrollmentId}/course
+        /// Lấy khóa học theo enrollment và toàn bộ sinh viên đang tham gia khóa học đó
+        /// </summary>
+        [HttpGet("{enrollmentId}/course")]
+        public async Task<IActionResult> GetCourseByEnrollmentId(int enrollmentId)
+        {
+            var course = await _enrollmentService.GetCourseByEnrollmentIdAsync(enrollmentId);
+            if (course == null)
+            {
+                return NotFound(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Bản ghi đăng ký môn học không tồn tại!",
+                    Errors = "404 Not Found"
+                });
+            }
+
+            var students = course.Enrollments
+                .Where(enrollment => enrollment.Student != null)
+                .GroupBy(enrollment => enrollment.Student!.StudentId)
+                .Select(group => group.First().Student!)
+                .Select(student => new StudentSummaryResponse
+                {
+                    StudentId = student.StudentId,
+                    FullName = student.FullName,
+                    Email = student.Email,
+                    DateOfBirth = student.DateOfBirth
+                })
+                .ToList();
+
+            var responseModel = new CourseWithStudentsResponse
+            {
+                CourseId = course.CourseId,
+                CourseName = course.CourseName,
+                SemesterId = course.SemesterId,
+                Semester = _mapper.Map<SemesterResponse?>(course.Semester),
+                Students = students
+            };
+
+            return Ok(new ApiResponse<CourseWithStudentsResponse>
+            {
+                Success = true,
+                Message = "Lấy khóa học theo enrollment thành công!",
+                Data = responseModel
             });
         }
     }

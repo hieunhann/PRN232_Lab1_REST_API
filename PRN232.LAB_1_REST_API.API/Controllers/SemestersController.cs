@@ -50,13 +50,13 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSemesters([FromQuery] ListQueryRequest request)
         {
-            var result = await _semesterService.GetSemestersAsync(request.Search, request.Sort, request.Page, request.Size, request.Expand, request.Filter);
+            var result = await _semesterService.GetSemestersAsync(request.search, request.sort, request.page, request.size, request.expand, request.filter);
             var responseModels = _mapper.Map<IEnumerable<SemesterResponse>>(result.Items);
-            var shapedData = responseModels.ShapeData(request.Fields);
+            var shapedData = responseModels.ShapeData(request.fields);
 
             return Ok(new ApiResponse<object>
             {
-                Pagination = new PagedResponse { Page = request.Page, PageSize = request.Size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
+                Pagination = new PagedResponse { Page = request.page, PageSize = request.size, TotalItems = result.TotalItems, TotalPages = result.TotalPages },
                 Success = true,
                 Message = "Request processed successfully",
                 Data = shapedData
@@ -166,6 +166,37 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             {
                 Success = true,
                 Message = "Xóa học kỳ thành công!"
+            });
+        }
+
+        /// <summary>
+        /// GET: api/semesters/{semesterId}/courses
+        /// Lấy tất cả các khóa học thuộc học kỳ tương ứng theo SemesterId
+        /// </summary>
+        /// <param name="semesterId">Mã định danh học kỳ</param>
+        /// <returns>Danh sách khóa học</returns>
+        [HttpGet("{semesterId}/courses")]
+        public async Task<IActionResult> GetCoursesBySemesterId(int semesterId)
+        {
+            // Gọi service lấy danh sách khóa học thuộc học kỳ
+            var courses = await _semesterService.GetCoursesBySemesterIdAsync(semesterId);
+            if (courses == null)
+            {
+                return NotFound(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Học kỳ không tồn tại!",
+                    Errors = "404 Not Found"
+                });
+            }
+
+            var responseModels = _mapper.Map<IEnumerable<CourseResponse>>(courses);
+
+            return Ok(new ApiResponse<IEnumerable<CourseResponse>>
+            {
+                Success = true,
+                Message = "Lấy danh sách khóa học của học kỳ thành công!",
+                Data = responseModels
             });
         }
     }

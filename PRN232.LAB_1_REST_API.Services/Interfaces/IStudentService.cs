@@ -26,5 +26,10 @@ namespace PRN232.LAB_1_REST_API.Services.Interfaces
         /// Xóa học sinh khỏi hệ thống
         /// </summary>
         Task<bool> DeleteStudentAsync(int id);
+
+        /// <summary>
+        /// Lấy danh sách tất cả các khóa học mà sinh viên đã đăng ký theo StudentId
+        /// </summary>
+        Task<IEnumerable<CourseBusinessModel>?> GetCoursesByStudentIdAsync(int studentId);
     }
 }

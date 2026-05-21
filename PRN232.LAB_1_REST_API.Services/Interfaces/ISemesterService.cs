@@ -12,5 +12,10 @@ namespace PRN232.LAB_1_REST_API.Services.Interfaces
         Task<SemesterBusinessModel> AddSemesterAsync(SemesterRequest request);
         Task<SemesterBusinessModel?> UpdateSemesterAsync(int id, SemesterRequest request);
         Task<bool> DeleteSemesterAsync(int id);
+
+        /// <summary>
+        /// Lấy danh sách tất cả các khóa học thuộc học kỳ tương ứng theo SemesterId
+        /// </summary>
+        Task<IEnumerable<CourseBusinessModel>?> GetCoursesBySemesterIdAsync(int semesterId);
     }
 }
