@@ -89,7 +89,7 @@ Bằng cách tuân thủ đúng hướng dẫn này, báo cáo của bạn sẽ 
 ---
 
 ### 7️⃣ Yêu cầu 7: Các tính năng nâng cao của API danh sách (List API Capabilities)
-* **Mục tiêu:** Chứng minh API danh sách hỗ trợ đầy đủ 5 tính năng: Searching (Tìm kiếm), Sorting (Sắp xếp), Paging (Phân trang), Fields Selection (Chọn trường hiển thị), và Expansion (Mở rộng dữ liệu quan hệ).
+* **Mục tiêu:** Chứng minh API danh sách hỗ trợ đầy đủ 5 tính năng: Searching (Tìm kiếm), Sorting (Sắp xếp), Paging (Phân trang), ```Fields``` Selection (Chọn trường hiển thị), và Expansion (Mở rộng dữ liệu quan hệ).
 * **Cách thực hiện:**
   Chạy các request cụ thể trên Swagger hoặc Postman để kiểm tra từng tính năng.
 * **Số lượng ảnh cần chụp:** **05 ảnh** (Tương ứng với 5 tính năng).
