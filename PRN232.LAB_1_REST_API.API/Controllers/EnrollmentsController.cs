@@ -24,6 +24,12 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Retrieves a specific enrollment record by ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the enrollment.</param>
+        /// <param name="expand">Navigation properties to eagerly load (e.g., 'Course.Enrollments.Student').</param>
+        /// <returns>An ApiResponse wrapping the EnrollmentResponse object.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEnrollment(int id, [FromQuery] string? expand)
         {
@@ -50,6 +56,11 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Retrieves a paginated list of enrollments with sorting, searching, field selection, expansion, and filtering.
+        /// </summary>
+        /// <param name="request">The query request object containing search, sort, page, size, fields, expand, and filter parameters.</param>
+        /// <returns>A paginated ApiResponse containing the shaped enrollment data.</returns>
         [HttpGet]
         public async Task<IActionResult> GetEnrollments([FromQuery] ListQueryRequest request)
         {
@@ -67,11 +78,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// POST: api/enrollments
-        /// Tạo mới một bản ghi đăng ký môn học (Enrollment).
+        /// Creates a new enrollment record (registers a student to a course).
         /// </summary>
-        /// <param name="request">Thông tin đăng ký môn học mới từ Body request</param>
-        /// <returns>Bản ghi đăng ký vừa tạo kèm mã trạng thái 201 Created và Header Location</returns>
+        /// <param name="request">The enrollment request payload containing student ID, course ID, and enrollment date.</param>
+        /// <returns>The newly created enrollment wrapped in an ApiResponse with a 201 Created status.</returns>
         [HttpPost]
         public async Task<IActionResult> CreateEnrollment([FromBody] EnrollmentRequest request)
         {
@@ -103,12 +113,11 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// PUT: api/enrollments/{id}
-        /// Cập nhật thông tin bản ghi đăng ký môn học theo ID.
+        /// Fully updates an existing enrollment record by ID.
         /// </summary>
-        /// <param name="id">Mã định danh của bản ghi đăng ký</param>
-        /// <param name="request">Dữ liệu cập nhật mới</param>
-        /// <returns>Bản ghi đăng ký môn học sau khi được cập nhật thành công</returns>
+        /// <param name="id">The unique identifier of the enrollment record to update.</param>
+        /// <param name="request">The updated enrollment payload.</param>
+        /// <returns>An ApiResponse wrapping the updated enrollment data.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEnrollment(int id, [FromBody] EnrollmentRequest request)
         {
@@ -145,11 +154,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// DELETE: api/enrollments/{id}
-        /// Xóa bản ghi đăng ký môn học theo ID.
+        /// Permanently deletes an enrollment record from the system by its ID.
         /// </summary>
-        /// <param name="id">Mã định danh của bản ghi đăng ký cần xóa</param>
-        /// <returns>Thông điệp phản hồi kết quả xóa thành công hoặc lỗi</returns>
+        /// <param name="id">The unique identifier of the enrollment to delete.</param>
+        /// <returns>An ApiResponse indicating success or failure of the deletion.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEnrollment(int id)
         {
@@ -173,11 +181,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// GET: api/enrollments/{enrollmentId}/students
-        /// Lấy tất cả sinh viên học cùng lớp (khóa học) của một enrollment theo EnrollmentId
+        /// Retrieves all classmates enrolled in the same course as the specified enrollment.
         /// </summary>
-        /// <param name="enrollmentId">Mã định danh đăng ký học</param>
-        /// <returns>Danh sách sinh viên học cùng lớp</returns>
+        /// <param name="enrollmentId">The unique identifier of the enrollment record.</param>
+        /// <returns>An ApiResponse wrapping a collection of classmate StudentResponse objects.</returns>
         [HttpGet("{enrollmentId}/students")]
         public async Task<IActionResult> GetStudentsByEnrollmentId(int enrollmentId)
         {
@@ -204,9 +211,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// GET: api/enrollments/{enrollmentId}/course
-        /// Lấy khóa học theo enrollment và toàn bộ sinh viên đang tham gia khóa học đó
+        /// Retrieves the course details and all its enrolled students associated with the specified enrollment ID.
         /// </summary>
+        /// <param name="enrollmentId">The unique identifier of the enrollment record.</param>
+        /// <returns>An ApiResponse wrapping a CourseWithStudentsResponse object.</returns>
         [HttpGet("{enrollmentId}/course")]
         public async Task<IActionResult> GetCourseByEnrollmentId(int enrollmentId)
         {

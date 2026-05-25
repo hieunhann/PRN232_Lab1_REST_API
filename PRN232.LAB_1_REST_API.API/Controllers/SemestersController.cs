@@ -23,6 +23,12 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Retrieves a specific semester record by ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the semester.</param>
+        /// <param name="expand">Navigation properties to eagerly load (e.g., 'Courses').</param>
+        /// <returns>An ApiResponse wrapping the SemesterResponse object.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSemester(int id, [FromQuery] string? expand)
         {
@@ -47,6 +53,11 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Retrieves a paginated list of semesters with sorting, searching, field selection, expansion, and filtering.
+        /// </summary>
+        /// <param name="request">The query request object containing search, sort, page, size, fields, expand, and filter parameters.</param>
+        /// <returns>A paginated ApiResponse containing the shaped semester data.</returns>
         [HttpGet]
         public async Task<IActionResult> GetSemesters([FromQuery] ListQueryRequest request)
         {
@@ -64,11 +75,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// POST: api/semesters
-        /// Tạo mới một học kỳ (Semester).
+        /// Creates a new semester record in the system.
         /// </summary>
-        /// <param name="request">Thông tin học kỳ mới từ Body request</param>
-        /// <returns>Thông tin học kỳ vừa tạo kèm mã trạng thái 201 Created và Header Location</returns>
+        /// <param name="request">The semester creation payload containing semester name, start date, and end date.</param>
+        /// <returns>The newly created semester wrapped in an ApiResponse with a 201 Created status.</returns>
         [HttpPost]
         public async Task<IActionResult> CreateSemester([FromBody] SemesterRequest request)
         {
@@ -100,12 +110,11 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// PUT: api/semesters/{id}
-        /// Cập nhật thông tin học kỳ theo ID.
+        /// Fully updates an existing semester's details by their ID.
         /// </summary>
-        /// <param name="id">Mã định danh học kỳ cần cập nhật</param>
-        /// <param name="request">Dữ liệu học kỳ mới</param>
-        /// <returns>Thông tin học kỳ sau khi cập nhật</returns>
+        /// <param name="id">The unique identifier of the semester to update.</param>
+        /// <param name="request">The updated semester details payload.</param>
+        /// <returns>An ApiResponse wrapping the updated semester data.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSemester(int id, [FromBody] SemesterRequest request)
         {
@@ -142,11 +151,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// DELETE: api/semesters/{id}
-        /// Xóa học kỳ theo ID.
+        /// Permanently deletes a semester record from the system by its ID.
         /// </summary>
-        /// <param name="id">Mã định danh học kỳ cần xóa</param>
-        /// <returns>Thông điệp phản hồi kết quả xóa thành công hoặc lỗi</returns>
+        /// <param name="id">The unique identifier of the semester to delete.</param>
+        /// <returns>An ApiResponse indicating success or failure of the deletion.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSemester(int id)
         {
@@ -170,11 +178,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// GET: api/semesters/{semesterId}/courses
-        /// Lấy tất cả các khóa học thuộc học kỳ tương ứng theo SemesterId
+        /// Retrieves all courses scheduled for a specific academic semester by Semester ID.
         /// </summary>
-        /// <param name="semesterId">Mã định danh học kỳ</param>
-        /// <returns>Danh sách khóa học</returns>
+        /// <param name="semesterId">The unique identifier of the semester.</param>
+        /// <returns>An ApiResponse wrapping a collection of CourseResponse objects.</returns>
         [HttpGet("{semesterId}/courses")]
         public async Task<IActionResult> GetCoursesBySemesterId(int semesterId)
         {

@@ -63,15 +63,30 @@ namespace PRN232.LAB_1_REST_API.Services
             return await _repository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<StudentBusinessModel>> GetStudentsByCourseIdAsync(int courseId)
+        public async Task<IEnumerable<StudentInCourseBusinessModel>> GetStudentsByCourseIdAsync(int courseId)
         {
             // Tải khóa học kèm theo danh sách Enrollments và thông tin chi tiết từng Student
             var course = await _repository.GetByIdAsync(courseId, "Enrollments.Student");
-            if (course == null) return Enumerable.Empty<StudentBusinessModel>();
+            if (course == null) return Enumerable.Empty<StudentInCourseBusinessModel>();
 
-            // Trích xuất danh sách sinh viên từ danh sách đăng ký học của khóa học
-            var students = course.Enrollments.Select(e => e.Student);
-            return _mapper.Map<IEnumerable<StudentBusinessModel>>(students);
+            // Ánh xạ phẳng sang StudentInCourseBusinessModel
+            var studentsInCourse = new List<StudentInCourseBusinessModel>();
+            foreach (var e in course.Enrollments)
+            {
+                if (e.Student != null)
+                {
+                    studentsInCourse.Add(new StudentInCourseBusinessModel
+                    {
+                        StudentId = e.Student.StudentId,
+                        FullName = e.Student.FullName,
+                        Email = e.Student.Email,
+                        DateOfBirth = e.Student.DateOfBirth,
+                        EnrollmentStatus = e.Status,
+                        EnrollDate = e.EnrollDate
+                    });
+                }
+            }
+            return studentsInCourse;
         }
     }
 }

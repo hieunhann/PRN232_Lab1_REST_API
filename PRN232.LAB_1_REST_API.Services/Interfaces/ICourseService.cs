@@ -12,6 +12,6 @@ namespace PRN232.LAB_1_REST_API.Services.Interfaces
         Task<CourseBusinessModel> AddCourseAsync(CourseRequest request);
         Task<CourseBusinessModel?> UpdateCourseAsync(int id, CourseRequest request);
         Task<bool> DeleteCourseAsync(int id);
-        Task<IEnumerable<StudentBusinessModel>> GetStudentsByCourseIdAsync(int courseId);
+        Task<IEnumerable<StudentInCourseBusinessModel>> GetStudentsByCourseIdAsync(int courseId);
     }
 }

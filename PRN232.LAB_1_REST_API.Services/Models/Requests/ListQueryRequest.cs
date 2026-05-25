@@ -3,50 +3,50 @@ using System.ComponentModel;
 namespace PRN232.LAB_1_REST_API.Services.Models.Requests
 {
     /// <summary>
-    /// Các tham số dùng chung cho truy vấn danh sách.
+    /// Common query parameters for list querying.
     /// </summary>
     public class ListQueryRequest
     {
         /// <summary>
-        /// Từ khóa tìm kiếm theo các trường chuỗi của entity.
+        /// Search keyword matching the string fields of the entity.
         /// </summary>
-        [Description("Từ khóa tìm kiếm theo các trường chuỗi của entity, ví dụ: tên, email, mã khóa học.")]
+        [Description("Search keyword matching the string fields of the entity, e.g., name, email, course code.")]
         public string? search { get; set; }
 
         /// <summary>
-        /// Sắp xếp theo tên thuộc tính, có thể nhiều field phân tách bằng dấu phẩy.
+        /// Sort by property name. Supports multiple fields separated by commas.
         /// </summary>
-        [Description("Sắp xếp theo tên thuộc tính, ví dụ: fullName hoặc -fullName để giảm dần. Có thể truyền nhiều field, phân tách bằng dấu phẩy.")]
+        [Description("Sort by property name, e.g., fullName or -fullName for descending. Multiple fields can be separated by commas.")]
         public string? sort { get; set; }
 
         /// <summary>
-        /// Trang hiện tại, bắt đầu từ 1.
+        /// Current page number, starting from 1.
         /// </summary>
-        [Description("Trang hiện tại, bắt đầu từ 1.")]
+        [Description("Current page, starting from 1.")]
         public int page { get; set; } = 1;
 
         /// <summary>
-        /// Số bản ghi trên mỗi trang.
+        /// Number of records per page.
         /// </summary>
-        [Description("Số bản ghi trên mỗi trang. Nên chọn số dương, ví dụ 10, 20, 50.")]
+        [Description("Number of records per page. Use positive numbers like 10, 20, 50.")]
         public int size { get; set; } = 10;
 
         /// <summary>
-        /// Chỉ lấy các field cần thiết khi trả về dữ liệu.
+        /// Selected fields to return in the response.
         /// </summary>
-        [Description("Danh sách field cần trả về, phân tách bằng dấu phẩy. Ví dụ: studentId,fullName,email")]
+        [Description("List of fields to return, separated by commas. E.g., studentId,fullName,email")]
         public string? fields { get; set; }
 
         /// <summary>
-        /// Nạp thêm navigation properties liên quan.
+        /// Eager load related navigation properties.
         /// </summary>
-        [Description("Nạp thêm quan hệ liên quan, phân tách bằng dấu phẩy. Ví dụ: enrollments.course hoặc course.enrollments.student")]
+        [Description("Eager load related navigation properties, separated by commas. E.g., enrollments.course or course.enrollments.student")]
         public string? expand { get; set; }
 
         /// <summary>
-        /// Biểu thức lọc động cho danh sách.
+        /// Dynamic filter expression for the list.
         /// </summary>
-        [Description("Biểu thức lọc động. Ví dụ: CourseId == 15, Status == \"Active\". Có thể kết hợp điều kiện với && hoặc ||.")]
+        [Description("Dynamic filter expression. E.g., CourseId == 15, Status == \"Active\". Can combine conditions with && or ||.")]
         public string? filter { get; set; }
     }
 }

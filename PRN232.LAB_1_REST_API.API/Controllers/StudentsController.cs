@@ -22,6 +22,12 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Retrieves a specific student's details by ID, including related enrollments and courses.
+        /// </summary>
+        /// <param name="id">The unique identifier of the student.</param>
+        /// <param name="expand">Navigation properties to eagerly load (e.g., 'Enrollments.Course').</param>
+        /// <returns>An ApiResponse wrapping the StudentResponse object.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStudent(int id, [FromQuery] string? expand)
         {
@@ -48,6 +54,11 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Retrieves a paginated list of students with sorting, searching, field selection, expansion, and filtering capabilities.
+        /// </summary>
+        /// <param name="request">The query request object containing search, sort, page, size, fields, expand, and filter parameters.</param>
+        /// <returns>A paginated ApiResponse containing the shaped student data.</returns>
         [HttpGet]
         public async Task<IActionResult> GetStudents([FromQuery] ListQueryRequest request)
         {
@@ -76,10 +87,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// API tạo mới học sinh
+        /// Creates a new student record in the system.
         /// </summary>
-        /// <param name="request">Payload chứa thông tin học sinh do Client gửi lên</param>
-        /// <returns>HTTP 201 Created kèm dữ liệu đã tạo nếu thành công, hoặc HTTP 400 Bad Request nếu dữ liệu lỗi</returns>
+        /// <param name="request">The payload containing student details to create.</param>
+        /// <returns>The newly created student wrapped in an ApiResponse with a 201 Created status.</returns>
         [HttpPost]
         public async Task<IActionResult> CreateStudent([FromBody] StudentRequest request)
         {
@@ -115,6 +126,12 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
                 });
         }
 
+        /// <summary>
+        /// Fully updates an existing student's details by their ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the student to update.</param>
+        /// <param name="request">The updated student details.</param>
+        /// <returns>An ApiResponse wrapping the updated student data.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStudent(int id, [FromBody] StudentRequest request)
         {
@@ -148,6 +165,11 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Permanently deletes a student record from the system by their ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the student to delete.</param>
+        /// <returns>An ApiResponse indicating success or failure of the deletion.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
@@ -170,11 +192,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// GET: api/students/{studentId}/courses
-        /// Lấy tất cả các khóa học mà sinh viên đã đăng ký học theo StudentId
+        /// Retrieves all courses that a specific student is registered/enrolled in.
         /// </summary>
-        /// <param name="studentId">Mã định danh học sinh</param>
-        /// <returns>Danh sách khóa học</returns>
+        /// <param name="studentId">The unique identifier of the student.</param>
+        /// <returns>An ApiResponse wrapping a collection of CourseResponse objects.</returns>
         [HttpGet("{studentId}/courses")]
         public async Task<IActionResult> GetCoursesByStudentId(int studentId)
         {

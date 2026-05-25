@@ -23,6 +23,12 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Retrieves a specific subject record by ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the subject.</param>
+        /// <param name="expand">Navigation properties to eagerly load.</param>
+        /// <returns>An ApiResponse wrapping the SubjectResponse object.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSubject(int id, [FromQuery] string? expand)
         {
@@ -47,6 +53,11 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Retrieves a paginated list of subjects with sorting, searching, field selection, expansion, and filtering.
+        /// </summary>
+        /// <param name="request">The query request object containing search, sort, page, size, fields, expand, and filter parameters.</param>
+        /// <returns>A paginated ApiResponse containing the shaped subject data.</returns>
         [HttpGet]
         public async Task<IActionResult> GetSubjects([FromQuery] ListQueryRequest request)
         {
@@ -64,11 +75,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// POST: api/subjects
-        /// Tạo mới một môn học (Subject).
+        /// Creates a new subject record in the system.
         /// </summary>
-        /// <param name="request">Thông tin môn học mới từ Body request</param>
-        /// <returns>Thông tin môn học vừa tạo kèm mã trạng thái 201 Created và Header Location</returns>
+        /// <param name="request">The subject creation payload containing the subject name.</param>
+        /// <returns>The newly created subject wrapped in an ApiResponse with a 201 Created status.</returns>
         [HttpPost]
         public async Task<IActionResult> CreateSubject([FromBody] SubjectRequest request)
         {
@@ -100,12 +110,11 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// PUT: api/subjects/{id}
-        /// Cập nhật thông tin môn học theo ID.
+        /// Fully updates an existing subject's details by their ID.
         /// </summary>
-        /// <param name="id">Mã định danh môn học cần cập nhật</param>
-        /// <param name="request">Dữ liệu môn học mới</param>
-        /// <returns>Thông tin môn học sau khi cập nhật thành công</returns>
+        /// <param name="id">The unique identifier of the subject to update.</param>
+        /// <param name="request">The updated subject details payload.</param>
+        /// <returns>An ApiResponse wrapping the updated subject data.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSubject(int id, [FromBody] SubjectRequest request)
         {
@@ -142,11 +151,10 @@ namespace PRN232.LAB_1_REST_API.API.Controllers
         }
 
         /// <summary>
-        /// DELETE: api/subjects/{id}
-        /// Xóa môn học theo ID.
+        /// Permanently deletes a subject record from the system by its ID.
         /// </summary>
-        /// <param name="id">Mã định danh môn học cần xóa</param>
-        /// <returns>Thông điệp phản hồi kết quả xóa thành công hoặc lỗi</returns>
+        /// <param name="id">The unique identifier of the subject to delete.</param>
+        /// <returns>An ApiResponse indicating success or failure of the deletion.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSubject(int id)
         {

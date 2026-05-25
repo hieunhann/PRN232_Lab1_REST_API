@@ -30,6 +30,7 @@ namespace PRN232.LAB_1_REST_API.API.Profiles
             CreateMap<CourseBusinessModel, CourseResponse>();
             CreateMap<SubjectBusinessModel, SubjectResponse>();
             CreateMap<SemesterBusinessModel, SemesterResponse>();
+            CreateMap<StudentInCourseBusinessModel, StudentInCourseResponse>();
         }
     }
 }
