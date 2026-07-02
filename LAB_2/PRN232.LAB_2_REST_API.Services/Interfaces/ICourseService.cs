@@ -1,0 +1,17 @@
+﻿using PRN232.LAB_2_REST_API.Services.Models;
+using PRN232.LAB_2_REST_API.Services.Models.Requests;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace PRN232.LAB_2_REST_API.Services.Interfaces
+{
+    public interface ICourseService
+    {
+        Task<CourseBusinessModel?> GetCourseByIdAsync(int id, string? expand);
+        Task<(IEnumerable<CourseBusinessModel> Items, int TotalItems, int TotalPages)> GetCoursesAsync(string? search, string? sort, int page, int pageSize, string? expand, string? filter = null);
+        Task<CourseBusinessModel> AddCourseAsync(CourseRequest request);
+        Task<CourseBusinessModel?> UpdateCourseAsync(int id, CourseRequest request);
+        Task<bool> DeleteCourseAsync(int id);
+        Task<IEnumerable<StudentInCourseBusinessModel>> GetStudentsByCourseIdAsync(int courseId);
+    }
+}
