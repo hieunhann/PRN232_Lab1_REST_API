@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: lab2_db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+    ports:
+      - "1434:1433"
+    volumes:
+      - dbdata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong!Passw0rd", "-Q", "SELECT 1", "-No"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: lab2_rest_api
+    build:
+      context: .
+      dockerfile: PRN232.LAB_2_REST_API.API/Dockerfile
+    container_name: lab2_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=Lab2LmsDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      # JWT Secret phải cấu hình qua environment variable (không hardcode trong code)
+      - Jwt__SecretKey=PRN232-Lab2-Docker-SecretKey-Must-Be-Long-Enough-32Chars!
+      - Jwt__Issuer=PRN232Lab2API
+      - Jwt__Audience=PRN232Lab2Client
+      - Jwt__ExpiresInMinutes=60
+      - Jwt__RefreshTokenExpiryDays=7
+    ports:
+      - "5000:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  dbdata:
